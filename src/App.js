@@ -1,56 +1,36 @@
 import { Component } from 'react';
-
+import UserCard from './components/user-card.component';
 import './App.css';
 
 class App extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      monsters: [],
-      searchField: '',
-    };
-  }
-
-  componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json())
-      .then(users => this.setState({ monsters: users }));
-  }
-
-  handleSearchChange = event => {
-    this.setState({ searchField: event.target.value }, () => {
-      console.log(this.state.searchField);
-    });
+  state = {
+    users: [
+      { id: 1, name: 'Alina', age: 25, city: 'Amster', isOnline: true },
+      { id: 2, name: 'John', age: 30, city: 'Berlin', isOnline: false },
+      { id: 3, name: 'Sara', age: 22, city: 'Paris', isOnline: true },
+    ],
   };
 
-  filterMonsters() {
-    return this.state.monsters.filter(monster =>
-      monster.name.toLocaleLowerCase()
-        .includes(this.state.searchField.toLocaleLowerCase()));
-  }
-
   generateList(list) {
-    return list.map(monster => {
+    const { users } = this.state;
+
+    const generatedList = users.map(user => {
       return (
-        <div key={monster.id}>
-          <h1>{monster.name}</h1>
-        </div>
+        <UserCard
+          key={user.id}
+          name={user.name}
+          age={user.age}
+          city={user.city}
+          isOnline={user.isOnline}
+        />
       );
     });
+    return generatedList;
   }
 
   render() {
-    const filteredMonstersList = this.filterMonsters();
-    return (
-      <div className="App">
-        <input className="search-box"
-          type="search"
-          placeholder="search monsters"
-          onChange={this.handleSearchChange} />
-        {this.generateList(filteredMonstersList)}
-      </div>
-    );
+    const listOfUsers = this.generateList(this.state.users);
+    return <div className="App">{listOfUsers}</div>;
   }
 }
 
